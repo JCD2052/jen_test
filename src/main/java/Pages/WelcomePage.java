@@ -10,11 +10,9 @@ public class WelcomePage extends Form {
             getLink(By.xpath("//a[contains(@class, 'start') and contains(@class, 'link')]"),
                     "Go Next Page Link");
 
-
     public WelcomePage() {
         super(By.xpath("//button[contains(@class, 'start')]"), "Welcome Page");
     }
-
 
     public void goToGamePage() {
         GO_TO_GAME_PAGE_LINK.click();
