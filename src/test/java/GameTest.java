@@ -2,6 +2,8 @@ import Pages.GamePage;
 import Utils.RandomValue;
 import org.testng.annotations.Test;
 
+import java.io.File;
+
 public class GameTest extends BaseTest{
 
 
@@ -16,5 +18,7 @@ public class GameTest extends BaseTest{
         gamePage.selectDomain(RandomValue.getRandomIntInRange(1, gamePage.getDomainsCount() - 1));
         gamePage.acceptTerms();
         gamePage.goToStepTwo();
+        File uploadFile = new File("src/main/resources/download.jpg");
+        uploadFile.getAbsoluteFile();
     }
 }

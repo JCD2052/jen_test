@@ -1,19 +1,29 @@
 package Pages;
 
+import Utils.RobotActions;
+import aquality.selenium.core.elements.ElementState;
 import aquality.selenium.elements.ElementType;
 import aquality.selenium.elements.interfaces.*;
 import aquality.selenium.forms.Form;
 import org.openqa.selenium.By;
 
 import java.util.List;
+import java.util.Locale;
+import java.util.stream.Collectors;
 
 public class GamePage extends Form {
 
     private final String NEXT_BUTTON_BASE_LOCATOR = "[contains(@class, 'button') and contains(text(), 'Next')]";
 
+    private final String INTEREST_CHECKBOXES_LOCATOR =
+            "//span[contains(@class, 'checkbox') and contains(@class, '__box')]";
+
     private final String COOKIE_WINDOW_LOCATOR = "//div[contains(@class, 'cookies')]";
 
     private final String ACCEPT_COOKIES_BUTTON_LOCATOR = "//button[contains(text(), 'no')]";
+
+    private final String DOMAIN_SELECTOR_LOCATOR =
+            "//div[contains(@class, 'dropdown') and contains(@class, 'list') and contains(@class, 'item')]";
 
     private final ILabel HELP_WINDOW = getElementFactory()
             .getLabel(By.xpath("//div[contains(@class, 'help-form') and not (contains(@class, '_'))]"),
@@ -66,11 +76,16 @@ public class GamePage extends Form {
             .getLabel(By.xpath("//div[contains(@class, 'timer')]"),
                     "Timer Field");
 
-    private final String INTEREST_CHECKBOXES_LOCATOR =
-            "//span[contains(@class, 'checkbox') and contains(@class, 'icon')]";
+    private final ILabel AVATAR_PICTURE = getElementFactory()
+            .getLabel(By.xpath("//div[contains(@class, 'image') and contains(@class, 'avatar')]"),
+                    "Profile Avatar Picture");
 
-    private final String DOMAIN_SELECTOR_LOCATOR =
-            "//div[contains(@class, 'dropdown') and contains(@class, 'list') and contains(@class, 'item')]";
+
+    private final ICheckBox UNSELECT_ALL_CHECKBOX = getElementFactory()
+            .getCheckBox(By.xpath(INTEREST_CHECKBOXES_LOCATOR
+                            .concat("//ancestor::div//span[contains(text(), 'Unselect')]//preceding-sibling::span")
+                            .concat(INTEREST_CHECKBOXES_LOCATOR)),
+                    "Unselect All CheckBox");
 
 
     public GamePage() {
@@ -81,6 +96,14 @@ public class GamePage extends Form {
                 "Game Page");
     }
 
+
+    public boolean isImageLoaded() {
+        return AVATAR_PICTURE.state().isExist();
+    }
+
+    public void checkInterestCheckBox(int position){
+        getAllCheckBoxes().get(position).check();
+    }
 
     public void acceptCookies() {
         ACCEPT_COOKIES_BUTTON.state().waitForExist();
@@ -107,8 +130,9 @@ public class GamePage extends Form {
         PASSWORD_INPUT_FIELD.clearAndType(password);
     }
 
-    public void uploadFile() {
+    public void uploadFile(String absoluteFilePath) {
         UPLOAD_FIELD.click();
+        RobotActions.insertFilePath(absoluteFilePath);
     }
 
     public void enterEmail(String email) {
@@ -136,25 +160,35 @@ public class GamePage extends Form {
     }
 
     public int getDomainsCount() {
-        List<ILabel> domainList = getElementFactory()
-                .findElements(By.xpath(DOMAIN_SELECTOR_LOCATOR), ElementType.LABEL);
-        return domainList.size();
+        return getElementFactory()
+                .findElements(By.xpath(DOMAIN_SELECTOR_LOCATOR), ElementType.LABEL).size();
     }
+
+    public int getUncheckedCheckboxesCount() {
+        return getAllCheckBoxes().size();
+    }
+
+    private List<ICheckBox> getAllCheckBoxes(){
+        return getElementFactory().
+                findElements(By.xpath(INTEREST_CHECKBOXES_LOCATOR),
+                        ICheckBox.class, ElementState.EXISTS_IN_ANY_STATE)
+                .stream().filter(checkBox -> !checkBox.getText().toLowerCase().contains("select"))
+                .collect(Collectors.toList());
+    }
+
+//    private List<ICheckBox> getUncheckedInterestCheckboxes() {
+//        return getAllCheckBoxes().filter(checkBox -> !checkBox.isChecked())
+//                .collect(Collectors.toList())
+//    }
+
 
     public void goToStepTwo() {
         NEXT_TO_STEP_TWO.click();
     }
 
     public void unselectAllInterestsCheckBoxes() {
-        List<ICheckBox> checkBoxes = getElementFactory()
-                .findElements(By.xpath(INTEREST_CHECKBOXES_LOCATOR), ElementType.CHECKBOX);
-        for (ICheckBox checkBox : checkBoxes) {
-            if (checkBox.getText().contains("Unselect")) {
-                if (!checkBox.isChecked()) {
-                    checkBox.check();
-                    break;
-                }
-            }
+        if (!UNSELECT_ALL_CHECKBOX.isChecked()) {
+            UNSELECT_ALL_CHECKBOX.check();
         }
     }
 

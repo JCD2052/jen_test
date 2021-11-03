@@ -14,7 +14,7 @@ public class RandomValue {
     public static String getRandomPassword(int length){
         char[] possibleCharacters = ("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789").toCharArray();
         return RandomStringUtils.random(
-                length, 0, possibleCharacters.length-1,
+                length, 1, possibleCharacters.length-1,
                 false, false, possibleCharacters, new SecureRandom() );
     }
 }
