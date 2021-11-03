@@ -1,15 +1,12 @@
 import Pages.GamePage;
-import Pages.WelcomePage;
 import Utils.RandomValue;
-import aquality.selenium.browser.AqualityServices;
-import aquality.selenium.browser.Browser;
+import org.testng.annotations.Test;
 
-public class Launch {
-    public static void main(String[] args) throws InterruptedException {
-        Browser browser = AqualityServices.getBrowser();
-        browser.goTo("https://userinyerface.com/game.html%20target=");
-        WelcomePage welcomePage = new WelcomePage();
-        welcomePage.goToGamePage();
+public class GameTest extends BaseTest{
+
+
+    @Test
+    public void gamePageTest(){
         GamePage gamePage = new GamePage();
         gamePage.state().waitForDisplayed();
         gamePage.enterPassword(RandomValue.getRandomPassword(11));
@@ -19,8 +16,5 @@ public class Launch {
         gamePage.selectDomain(RandomValue.getRandomIntInRange(1, gamePage.getDomainsCount() - 1));
         gamePage.acceptTerms();
         gamePage.goToStepTwo();
-        gamePage.uploadFile();
-        Thread.sleep(3000);
-        browser.quit();
     }
 }
