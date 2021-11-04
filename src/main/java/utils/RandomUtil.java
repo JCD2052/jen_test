@@ -1,16 +1,12 @@
-package Utils;
+package utils;
 
-import org.apache.commons.lang3.RandomStringUtils;
-
-import java.security.SecureRandom;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import java.util.function.Consumer;
 
-public class RandomValue {
-
+public class RandomUtil {
     public static int getRandomIntInRange(int min, int max) {
         return new Random().nextInt(Math.abs(max - min)) + min;
     }
@@ -19,7 +15,7 @@ public class RandomValue {
         return new Random().ints(min, max).distinct().limit(length).toArray();
     }
 
-    public static String getRandomPassword(int length) {
+    public static String getRandomString(int length) {
         String digits = "0123456789";
         String all = "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
                 + "abcdefghijklmnopqrstuvwxyz"

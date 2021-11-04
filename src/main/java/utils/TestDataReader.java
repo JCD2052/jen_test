@@ -1,4 +1,4 @@
-package Utils;
+package utils;
 
 import aquality.selenium.core.logging.Logger;
 import aquality.selenium.core.utilities.ISettingsFile;
@@ -8,8 +8,7 @@ import org.openqa.selenium.json.JsonException;
 import java.io.File;
 import java.io.IOException;
 
-public class ReadTestData {
-
+public class TestDataReader {
     public static ISettingsFile readTestDataFile() {
         try {
             return new JsonSettingsFile(new File("src/test/testData/testData.json"));

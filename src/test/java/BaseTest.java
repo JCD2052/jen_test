@@ -1,8 +1,7 @@
-import Pages.GamePage;
-import Pages.WelcomePage;
-import Utils.ReadTestData;
+import pages.GamePage;
+import pages.WelcomePage;
+import utils.TestDataReader;
 import aquality.selenium.browser.AqualityServices;
-import aquality.selenium.browser.Browser;
 import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
@@ -12,8 +11,7 @@ public abstract class BaseTest {
 
     @BeforeMethod
     protected void setup() {
-        Browser browser = AqualityServices.getBrowser();
-        browser.goTo(ReadTestData.readTestDataFile()
+        AqualityServices.getBrowser().goTo(TestDataReader.readTestDataFile()
                 .getValue("/enter_url").toString());
         WelcomePage welcomePage = new WelcomePage();
         Assert.assertTrue(welcomePage.state().waitForDisplayed(),
