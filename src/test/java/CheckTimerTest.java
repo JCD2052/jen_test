@@ -1,14 +1,15 @@
-import Pages.GamePage;
+import Utils.ReadTestData;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
-public class CheckTimerTest extends BaseTest{
+public class CheckTimerTest extends BaseTest {
 
     @Test
-    public void checkTimerTest(){
-        GamePage gamePage = new GamePage();
-        gamePage.state().waitForDisplayed();
+    public void checkTimerTest() {
         String currentTimerValue = gamePage.getCurrentTimerValue().trim();
-        Assert.assertEquals(currentTimerValue, "00:00:00");
+        Assert.assertEquals(currentTimerValue,
+                ReadTestData.readTestDataFile()
+                        .getValue("/expected_timer_result").toString(),
+                "Timer result doesn't match.");
     }
 }

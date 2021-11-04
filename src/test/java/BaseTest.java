@@ -1,17 +1,27 @@
+import Pages.GamePage;
 import Pages.WelcomePage;
+import Utils.ReadTestData;
 import aquality.selenium.browser.AqualityServices;
 import aquality.selenium.browser.Browser;
+import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 
 public abstract class BaseTest {
+    protected GamePage gamePage;
 
     @BeforeMethod
     protected void setup() {
         Browser browser = AqualityServices.getBrowser();
-        browser.goTo("https://userinyerface.com/game.html%20target=");
+        browser.goTo(ReadTestData.readTestDataFile()
+                .getValue("/enter_url").toString());
         WelcomePage welcomePage = new WelcomePage();
+        Assert.assertTrue(welcomePage.state().waitForDisplayed(),
+                "Welcome Page is not open.");
         welcomePage.goToGamePage();
+        gamePage = new GamePage();
+        Assert.assertTrue(gamePage.state().waitForDisplayed(),
+                "Game page is not open");
     }
 
     @AfterMethod

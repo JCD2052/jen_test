@@ -6,17 +6,20 @@ import aquality.selenium.elements.ElementType;
 import aquality.selenium.elements.interfaces.*;
 import aquality.selenium.forms.Form;
 import org.openqa.selenium.By;
-
 import java.util.List;
-import java.util.Locale;
 import java.util.stream.Collectors;
 
 public class GamePage extends Form {
+    private List<ICheckBox> checkBoxesList;
+
+    private final ILabel PERSONAL_DETAILS_CONTENT = getElementFactory()
+            .getLabel(By.xpath("//div[contains(@class, 'personal') and contains(@class, 'content')]"),
+                    "Personal Details Content Element");
 
     private final String NEXT_BUTTON_BASE_LOCATOR = "[contains(@class, 'button') and contains(text(), 'Next')]";
 
     private final String INTEREST_CHECKBOXES_LOCATOR =
-            "//span[contains(@class, 'checkbox') and contains(@class, '__box')]";
+            "//label[contains(@class, 'checkbox') and contains(@class, 'label')]";
 
     private final String COOKIE_WINDOW_LOCATOR = "//div[contains(@class, 'cookies')]";
 
@@ -29,11 +32,12 @@ public class GamePage extends Form {
             .getLabel(By.xpath("//div[contains(@class, 'help-form') and not (contains(@class, '_'))]"),
                     "Help Window");
 
-    private final IButton HIDE_HELP_FORM_BUTTON = getElementFactory()
+    private final IButton HIDE_HELP_WINDOW_BUTTON = getElementFactory()
             .getButton(By.xpath("//button[contains(@class, 'send') and contains(@class, 'bottom')]"),
                     "Hide Help Form Button");
 
-    private final ILabel COOKIE_WINDOW = getElementFactory().getLabel(By.xpath(COOKIE_WINDOW_LOCATOR),
+    private final ILabel COOKIE_WINDOW = getElementFactory()
+            .getLabel(By.xpath(COOKIE_WINDOW_LOCATOR),
             "Cookie Window");
 
     private final IButton CALL_DOMAIN_DROPDOWN_BUTTON = getElementFactory()
@@ -96,12 +100,19 @@ public class GamePage extends Form {
                 "Game Page");
     }
 
-
     public boolean isImageLoaded() {
-        return AVATAR_PICTURE.state().isExist();
+        return AVATAR_PICTURE.state().waitForExist();
     }
 
-    public void checkInterestCheckBox(int position){
+    public boolean isStepTwoLoaded() {
+        return UPLOAD_FIELD.state().waitForDisplayed();
+    }
+
+    public boolean isStepThreeLoaded() {
+        return PERSONAL_DETAILS_CONTENT.state().waitForDisplayed();
+    }
+
+    public void checkInterestCheckBox(int position) {
         getAllCheckBoxes().get(position).check();
     }
 
@@ -114,11 +125,11 @@ public class GamePage extends Form {
         return !COOKIE_WINDOW.state().isExist();
     }
 
-    public void clickHideHelpForm() {
-        HIDE_HELP_FORM_BUTTON.click();
+    public void clickHideHelpWindow() {
+        HIDE_HELP_WINDOW_BUTTON.click();
     }
 
-    public boolean isHelpFormHidden() {
+    public boolean isHelpWindowHidden() {
         return HELP_WINDOW.getAttribute("class").contains("hidden");
     }
 
@@ -164,23 +175,20 @@ public class GamePage extends Form {
                 .findElements(By.xpath(DOMAIN_SELECTOR_LOCATOR), ElementType.LABEL).size();
     }
 
-    public int getUncheckedCheckboxesCount() {
+    public int getInterestsCount() {
         return getAllCheckBoxes().size();
     }
 
-    private List<ICheckBox> getAllCheckBoxes(){
-        return getElementFactory().
-                findElements(By.xpath(INTEREST_CHECKBOXES_LOCATOR),
-                        ICheckBox.class, ElementState.EXISTS_IN_ANY_STATE)
-                .stream().filter(checkBox -> !checkBox.getText().toLowerCase().contains("select"))
-                .collect(Collectors.toList());
+    private List<ICheckBox> getAllCheckBoxes() {
+        if (checkBoxesList == null) {
+            checkBoxesList = getElementFactory().
+                    findElements(By.xpath(INTEREST_CHECKBOXES_LOCATOR),
+                            ICheckBox.class, ElementState.EXISTS_IN_ANY_STATE)
+                    .stream().filter(checkBox -> !checkBox.getAttribute("for").toLowerCase().contains("select"))
+                    .collect(Collectors.toList());
+        }
+        return checkBoxesList;
     }
-
-//    private List<ICheckBox> getUncheckedInterestCheckboxes() {
-//        return getAllCheckBoxes().filter(checkBox -> !checkBox.isChecked())
-//                .collect(Collectors.toList())
-//    }
-
 
     public void goToStepTwo() {
         NEXT_TO_STEP_TWO.click();
@@ -195,6 +203,5 @@ public class GamePage extends Form {
     public void goToStepThree() {
         NEXT_TO_STEP_THREE.click();
     }
-
 
 }

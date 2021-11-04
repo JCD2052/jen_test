@@ -1,0 +1,6 @@
+{
+  "enter_url": "https://userinyerface.com/game.html%20target=",
+  "count_of_selected_checkboxes": 3,
+  "upload_file_path": "src/test/testData/download.jpg",
+  "expected_timer_result": "00:00:00"
+}
