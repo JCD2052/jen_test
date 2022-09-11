@@ -8,9 +8,12 @@ import org.testng.annotations.BeforeMethod;
 
 public abstract class BaseTest {
     protected GamePage gamePage;
+    private final String browserFromEnv = System.getProperty("browser");
+    private final String stringValue = System.getProperty("stringValue");
 
     @BeforeMethod
     protected void setup() {
+        System.out.println(browserFromEnv  + " " + stringValue);
         AqualityServices.getBrowser().goTo(TestDataReader.readTestDataFile()
                 .getValue("/enter_url").toString());
         WelcomePage welcomePage = new WelcomePage();
